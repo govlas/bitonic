@@ -1,14 +1,15 @@
 package bitonic_test
 
 import (
-	"github.com/farazdagi/bitonic"
 	"math/rand"
 	"runtime"
 	"testing"
 	"time"
+
+	"github.com/farazdagi/bitonic"
 )
 
-const SAMPLE_SIZE = 1 << 16
+const SAMPLE_SIZE = 6
 
 var lst []int = make([]int, SAMPLE_SIZE)
 
@@ -23,7 +24,7 @@ func init() {
 
 func shuffle() {
 	for i := 0; i < SAMPLE_SIZE; i++ {
-		lst[i] = randInt(0, SAMPLE_SIZE)
+		lst[i] = randInt(0, 100)
 	}
 }
 
@@ -36,6 +37,7 @@ func TestSorter(t *testing.T) {
 		if prev > i {
 			t.Fatal("failed to confirm ASC sorting")
 		}
+		prev = i
 	}
 }
 

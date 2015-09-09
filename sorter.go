@@ -19,8 +19,8 @@ func bitonicSort(lo int, n int, dir bool, sentinel chan int) {
 		m := n / 2
 		c1 := make(chan int)
 		c2 := make(chan int)
-		go bitonicSort(lo, m, SORT_ASC, c1)
-		go bitonicSort(lo+m, m, SORT_DESC, c2)
+		go bitonicSort(lo, m, !dir, c1)
+		go bitonicSort(lo+m, n-m, dir, c2)
 		<-c1
 		<-c2
 		bitonicMerge(lo, n, dir, sentinel)
@@ -31,14 +31,19 @@ func bitonicSort(lo int, n int, dir bool, sentinel chan int) {
 
 func bitonicMerge(lo int, n int, dir bool, sentinel chan int) {
 	if n > 1 {
-		m := n / 2
-		for i := lo; i < lo+m; i++ {
+		m := 1
+		for m < n {
+			m = m << 1
+		}
+		m = m >> 1
+
+		for i := lo; i < lo+n-m; i++ {
 			compareAndSwap(i, i+m, dir)
 		}
 		c1 := make(chan int)
 		c2 := make(chan int)
 		go bitonicMerge(lo, m, dir, c1)
-		go bitonicMerge(lo+m, m, dir, c2)
+		go bitonicMerge(lo+m, n-m, dir, c2)
 		<-c1
 		<-c2
 	}
